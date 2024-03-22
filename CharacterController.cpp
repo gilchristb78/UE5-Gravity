@@ -22,6 +22,7 @@ void ACharacterController::SetupInputComponent()
 	InputComponent->BindAxis("MoveRight", this, &ACharacterController::CallMoveRight);
 	InputComponent->BindAxis("MoveForward", this, &ACharacterController::CallMoveForward);
 	InputComponent->BindAxis("Jump", this, &ACharacterController::CallJump);
+	InputComponent->BindAxis("LookRight", this, &ACharacterController::CallLookRight);
 }
 
 void ACharacterController::Tick(float DeltaTime)
@@ -51,4 +52,16 @@ void ACharacterController::CallJump(float val)
 	{
 		pawn->MoveZAxis(val);
 	}
+}
+
+void ACharacterController::CallLookRight(float val)
+{
+	if (ACharacterPawn* pawn = Cast<ACharacterPawn>(GetPawn()))
+	{
+		pawn->LookXAxis(val);
+	}
+}
+
+void ACharacterController::CallLookUp(float val)
+{
 }

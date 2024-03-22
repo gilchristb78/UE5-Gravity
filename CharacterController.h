@@ -31,4 +31,8 @@ public:
 	void CallMoveForward(float val);
 
 	void CallJump(float val);
+
+	void CallLookRight(float val);
+
+	void CallLookUp(float val);
 };

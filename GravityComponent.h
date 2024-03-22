@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GravityBase.h"
 #include "Components/ActorComponent.h"
+#include "CharacterPawn.h"
 #include "GravityComponent.generated.h"
 
 

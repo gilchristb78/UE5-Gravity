@@ -1,7 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "Math/RotationMatrix.h"
+
 #include "GravityComponent.h"
+#include "Math/RotationMatrix.h"
 
 
 // Sets default values for this component's properties
@@ -47,13 +48,8 @@ void UGravityComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 
 				GravityDirection = GravityZone->GetGravityDirection(OwningActor->GetActorLocation());
 
-				FRotator rotation = FRotationMatrix::MakeFromZX(GravityDirection * -1, OwningActor->GetActorForwardVector()).Rotator();
+				FRotator rotation = FRotationMatrix::MakeFromZX(GravityDirection * -1.0f, OwningActor->GetActorForwardVector()).Rotator();
 				OwningActor->SetActorRotation(rotation);
-
-				FVector location = OwningActor->GetActorLocation();
-				location += GravityDirection * 250;
-
-				OwningActor->SetActorLocation(location);
 
 				UE_LOG(LogTemp, Warning, TEXT("Swap"));
 				
@@ -66,7 +62,7 @@ void UGravityComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 	{
 		FVector location = OwningActor->GetActorLocation();
 
-		location += GravityDirection * 300 * DeltaTime;
+		location += GravityDirection * 500 * DeltaTime;
 
 		FHitResult OutHit;
 		FCollisionQueryParams Params;
@@ -80,8 +76,6 @@ void UGravityComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 		{
 			location = OutHit.Location;
 		}
-
-		
 
 		OwningActor->SetActorLocation(location);
 		

@@ -17,6 +17,9 @@ ACharacterPawn::ACharacterPawn()
 	Character->SetupAttachment(RootComponent);
 	Character->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
 
+	CollisionCapsule = CreateDefaultSubobject<UCapsuleComponent>("CollisionCapsule");
+	CollisionCapsule->SetupAttachment(RootComponent);
+
 	//Camera
 	UCameraComponent* OurCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("OurCamera"));
 	OurCamera->SetupAttachment(Character);
@@ -40,27 +43,58 @@ void ACharacterPawn::Tick(float DeltaTime)
 	if (velocity != FVector::ZeroVector)
 	{
 		FVector NewLocation = GetActorLocation();
-		NewLocation += (velocity.X * DeltaTime * GetActorRightVector() * 30);
-		NewLocation += (velocity.Y * DeltaTime * GetActorForwardVector() * 30);
-		NewLocation += (velocity.Z * DeltaTime * GetActorUpVector() * 30);
+		NewLocation += (velocity.X * DeltaTime * GetActorRightVector() * 10);
+		NewLocation += (velocity.Y * DeltaTime * GetActorForwardVector() * 10);
+		NewLocation += (velocity.Z * DeltaTime * GetActorUpVector() * 10); //split up so we can check
+
+		FHitResult OutHit;
+		FCollisionQueryParams Params;
+		Params.AddIgnoredActor(this);
+
+		float checkHeight = CollisionCapsule->GetScaledCapsuleHalfHeight() / 8;
+
+		DrawDebugLine(GetWorld(), NewLocation + GetActorUpVector() * checkHeight, NewLocation - GetActorUpVector() * checkHeight, FColor::Red);
+
+		GetWorld()->LineTraceSingleByChannel(OutHit, NewLocation + GetActorUpVector() * checkHeight, NewLocation - GetActorUpVector() * checkHeight, ECC_Visibility, Params);
+
+		if (OutHit.bBlockingHit)
+		{
+			DrawDebugSphere(GetWorld(), OutHit.Location, 5, 5, FColor::Green);
+			NewLocation = OutHit.Location;
+		}
 		SetActorLocation(NewLocation);
+
+	}
+
+	if (rotVelocity != FVector::ZeroVector)
+	{
+		FRotator NewRotation = FRotator::ZeroRotator;
+		NewRotation.Yaw += rotVelocity.X * DeltaTime;
+		AddActorLocalRotation(NewRotation);
 	}
 
 }
 
-void ACharacterPawn::MoveXAxis(float AxisValue)
+void ACharacterPawn::MoveXAxis(float val)
 {
-	velocity.X = AxisValue * 100.0f;
+	velocity.X = val * 100.0f;
 }
 
-void ACharacterPawn::MoveYAxis(float AxisValue)
+void ACharacterPawn::MoveYAxis(float val)
 {
-	velocity.Y = AxisValue * 100.0f;
+	
+	velocity.Y = val * 100.0f;
 }
 
-void ACharacterPawn::MoveZAxis(float AxisValue)
+void ACharacterPawn::MoveZAxis(float val)
 {
-	velocity.Z = AxisValue * 100.0f;
+	if (val >= 0.0f)
+		velocity.Z = val * 100.0f;
+}
+
+void ACharacterPawn::LookXAxis(float val)
+{
+	rotVelocity.X = val * 90;
 }
 
 // Called to bind functionality to input
