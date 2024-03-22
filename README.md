@@ -17,3 +17,5 @@ In this repository I will recreate different gravity physics in UE5
  - [ ] Character Movement
    - [ ] Accelleration
    - [ ] Cant run into stuff
+ - [ ] Movement Relative to ground
+  - [ ] Sin of angle between forward vector and forward of travel (parallel to ground)
