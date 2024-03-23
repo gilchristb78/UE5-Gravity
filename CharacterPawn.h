@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "Components/CapsuleComponent.h"
+#include "Camera/CameraComponent.h"
 #include "CharacterPawn.generated.h"
 
 
@@ -23,6 +24,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Robot")
 	UCapsuleComponent* CollisionCapsule;
 
+	UCameraComponent* OurCamera;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -35,8 +38,11 @@ public:
 	void MoveYAxis(float val);
 	void MoveZAxis(float val);
 	void LookXAxis(float val);
+	void LookYAxis(float val);
+	void LookZAxis(float val);
 	FVector velocity = FVector::ZeroVector;
 	FVector rotVelocity = FVector::ZeroVector;
+	bool bInGravity = false;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;

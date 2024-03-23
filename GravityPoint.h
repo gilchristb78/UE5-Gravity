@@ -27,4 +27,6 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USphereComponent* CollisionSphere; // Collision box component
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Robot")
+	bool InverseGravity;
 };

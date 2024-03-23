@@ -17,5 +17,6 @@ FVector AGravityPoint::GetGravityDirection(FVector ItemLocation)
 {
 	FVector gravityDirection = GetActorLocation() - ItemLocation;
 	gravityDirection.Normalize();
+	gravityDirection *= ((!InverseGravity) * 2) - 1;
 	return gravityDirection;
 }

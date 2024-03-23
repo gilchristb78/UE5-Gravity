@@ -37,25 +37,28 @@ void UGravityComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 
 
 	TArray<AActor*> OverlappingActors;
-	OwningActor->GetOverlappingActors(OverlappingActors);
+	OwningActor->GetOverlappingActors(OverlappingActors, AGravityBase::StaticClass());
 
-	for (AActor* OverlappingActor : OverlappingActors)
+	
+	if (OverlappingActors.Num() > 0)
 	{
-		if (AGravityBase* GravityZone = Cast<AGravityBase>(OverlappingActor))
+		AGravityBase* GravityZone = Cast<AGravityBase>(OverlappingActors[0]);
+
+		if (GravityZone->GetGravityDirection(OwningActor->GetActorLocation()) != GravityDirection)
 		{
-			if (GravityZone->GetGravityDirection(OwningActor->GetActorLocation()) != GravityDirection)
-			{
 
-				GravityDirection = GravityZone->GetGravityDirection(OwningActor->GetActorLocation());
+			GravityDirection = GravityZone->GetGravityDirection(OwningActor->GetActorLocation());
 
-				FRotator rotation = FRotationMatrix::MakeFromZX(GravityDirection * -1.0f, OwningActor->GetActorForwardVector()).Rotator();
-				OwningActor->SetActorRotation(rotation);
+			FRotator rotation = FRotationMatrix::MakeFromZX(GravityDirection * -1.0f, OwningActor->GetActorForwardVector()).Rotator();
+			OwningActor->SetActorRotation(rotation);
 
-				UE_LOG(LogTemp, Warning, TEXT("Swap"));
-				
-			}
-			
+			UE_LOG(LogTemp, Warning, TEXT("Swap"));
+
 		}
+	}
+	else
+	{
+		GravityDirection = FVector::ZeroVector;
 	}
 
 	if (OwningActor)

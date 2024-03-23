@@ -3,7 +3,7 @@
 
 #include "CharacterPawn.h"
 #include "GravityBox.h"
-#include "Camera/CameraComponent.h"
+
 
 // Sets default values
 ACharacterPawn::ACharacterPawn()
@@ -21,7 +21,7 @@ ACharacterPawn::ACharacterPawn()
 	CollisionCapsule->SetupAttachment(RootComponent);
 
 	//Camera
-	UCameraComponent* OurCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("OurCamera"));
+	OurCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("OurCamera"));
 	OurCamera->SetupAttachment(Character);
 	OurCamera->SetRelativeLocation(FVector(0.0f, -275.0f, 150.0f));
 	OurCamera->SetRelativeRotation(FRotator(-15.0f, 90.0f, 0.0f));
@@ -71,8 +71,16 @@ void ACharacterPawn::Tick(float DeltaTime)
 		FRotator NewRotation = FRotator::ZeroRotator;
 		NewRotation.Yaw += rotVelocity.X * DeltaTime;
 		AddActorLocalRotation(NewRotation);
-	}
 
+		NewRotation = OurCamera->GetRelativeRotation();
+		NewRotation.Pitch = FMath::Clamp(NewRotation.Pitch + (rotVelocity.Y * DeltaTime), -60.0f, 60.0f);
+		OurCamera->SetRelativeRotation(NewRotation);
+
+		NewRotation = FRotator::ZeroRotator;
+		NewRotation.Roll = rotVelocity.Z * DeltaTime;
+		AddActorLocalRotation(NewRotation);
+
+	}
 }
 
 void ACharacterPawn::MoveXAxis(float val)
@@ -95,6 +103,16 @@ void ACharacterPawn::MoveZAxis(float val)
 void ACharacterPawn::LookXAxis(float val)
 {
 	rotVelocity.X = val * 90;
+}
+
+void ACharacterPawn::LookYAxis(float val)
+{
+	rotVelocity.Y = val * 90;
+}
+
+void ACharacterPawn::LookZAxis(float val)
+{
+	rotVelocity.Z = val * 90;
 }
 
 // Called to bind functionality to input
