@@ -35,4 +35,6 @@ public:
 	void CallLookRight(float val);
 
 	void CallLookUp(float val);
+
+	void CallLeanRight(float val);
 };
