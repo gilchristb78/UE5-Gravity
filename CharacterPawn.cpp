@@ -26,12 +26,16 @@ ACharacterPawn::ACharacterPawn()
 	OurCamera->SetRelativeLocation(FVector(0.0f, -275.0f, 150.0f));
 	OurCamera->SetRelativeRotation(FRotator(-15.0f, 90.0f, 0.0f));
 
+	Movement = CreateDefaultSubobject<UMyCharacterMovement>(TEXT("MoveMentComponent"));
+	
+
 }
 
 // Called when the game starts or when spawned
 void ACharacterPawn::BeginPlay()
 {
 	Super::BeginPlay();
+	Movement->MaxSpeed = MaxSpeed;
 	
 }
 
@@ -40,31 +44,31 @@ void ACharacterPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (velocity != FVector::ZeroVector)
-	{
-		FVector NewLocation = GetActorLocation();
-		NewLocation += (velocity.X * DeltaTime * GetActorRightVector() * 10);
-		NewLocation += (velocity.Y * DeltaTime * GetActorForwardVector() * 10);
-		NewLocation += (velocity.Z * DeltaTime * GetActorUpVector() * 10); //split up so we can check
+	//if (velocity != FVector::ZeroVector)
+	//{
+	//	FVector NewLocation = GetActorLocation();
+	//	NewLocation += (velocity.X * DeltaTime * GetActorRightVector() * 10);
+	//	NewLocation += (velocity.Y * DeltaTime * GetActorForwardVector() * 10);
+	//	NewLocation += (velocity.Z * DeltaTime * GetActorUpVector() * 10); //split up so we can check
 
-		FHitResult OutHit;
-		FCollisionQueryParams Params;
-		Params.AddIgnoredActor(this);
+	//	FHitResult OutHit;
+	//	FCollisionQueryParams Params;
+	//	Params.AddIgnoredActor(this);
 
-		float checkHeight = CollisionCapsule->GetScaledCapsuleHalfHeight() / 8;
+	//	float checkHeight = CollisionCapsule->GetScaledCapsuleHalfHeight() / 8;
 
-		DrawDebugLine(GetWorld(), NewLocation + GetActorUpVector() * checkHeight, NewLocation - GetActorUpVector() * checkHeight, FColor::Red);
+	//	DrawDebugLine(GetWorld(), NewLocation + GetActorUpVector() * checkHeight, NewLocation - GetActorUpVector() * checkHeight, FColor::Red);
 
-		GetWorld()->LineTraceSingleByChannel(OutHit, NewLocation + GetActorUpVector() * checkHeight, NewLocation - GetActorUpVector() * checkHeight, ECC_Visibility, Params);
+	//	GetWorld()->LineTraceSingleByChannel(OutHit, NewLocation + GetActorUpVector() * checkHeight, NewLocation - GetActorUpVector() * checkHeight, ECC_Visibility, Params);
 
-		if (OutHit.bBlockingHit)
-		{
-			DrawDebugSphere(GetWorld(), OutHit.Location, 5, 5, FColor::Green);
-			NewLocation = OutHit.Location;
-		}
-		SetActorLocation(NewLocation);
+	//	if (OutHit.bBlockingHit)
+	//	{
+	//		DrawDebugSphere(GetWorld(), OutHit.Location, 5, 5, FColor::Green);
+	//		NewLocation = OutHit.Location;
+	//	}
+	//	SetActorLocation(NewLocation);
 
-	}
+	//}
 
 	if (rotVelocity != FVector::ZeroVector)
 	{
@@ -85,19 +89,21 @@ void ACharacterPawn::Tick(float DeltaTime)
 
 void ACharacterPawn::MoveXAxis(float val)
 {
-	velocity.X = val * 100.0f;
+	Movement->AddRightMovement(val * 10);
+	//velocity.X = val * 100.0f;
 }
 
 void ACharacterPawn::MoveYAxis(float val)
 {
-	
-	velocity.Y = val * 100.0f;
+	Movement->AddForwardMovement(val * 10);
+	//velocity.Y = val * 100.0f;
 }
 
 void ACharacterPawn::MoveZAxis(float val)
 {
-	if (val >= 0.0f)
-		velocity.Z = val * 100.0f;
+	Movement->AddUpMovement(val * 10);
+	/*if (val >= 0.0f)
+		velocity.Z = val * 100.0f;*/
 }
 
 void ACharacterPawn::LookXAxis(float val)
@@ -115,10 +121,10 @@ void ACharacterPawn::LookZAxis(float val)
 	rotVelocity.Z = val * 90;
 }
 
-// Called to bind functionality to input
-void ACharacterPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-}
+//// Called to bind functionality to input
+//void ACharacterPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+//{
+//	Super::SetupPlayerInputComponent(PlayerInputComponent);
+//
+//}
 

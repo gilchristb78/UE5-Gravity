@@ -52,8 +52,6 @@ void UGravityComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 			FRotator rotation = FRotationMatrix::MakeFromZX(GravityDirection * -1.0f, OwningActor->GetActorForwardVector()).Rotator();
 			OwningActor->SetActorRotation(rotation);
 
-			UE_LOG(LogTemp, Warning, TEXT("Swap"));
-
 		}
 	}
 	else
