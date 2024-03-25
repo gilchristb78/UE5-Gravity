@@ -6,6 +6,7 @@
 #include "GameFramework/Pawn.h"
 #include "Components/CapsuleComponent.h"
 #include "Camera/CameraComponent.h"
+#include "MyCharacterMovement.h"
 #include "CharacterPawn.generated.h"
 
 
@@ -24,6 +25,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Robot")
 	UCapsuleComponent* CollisionCapsule;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Robot")
+	float MaxSpeed;
+
+	UMyCharacterMovement* Movement;
+	
 	UCameraComponent* OurCamera;
 
 protected:
@@ -44,7 +50,7 @@ public:
 	FVector rotVelocity = FVector::ZeroVector;
 	bool bInGravity = false;
 
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	//// Called to bind functionality to input
+	//virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 };
