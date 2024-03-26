@@ -9,7 +9,6 @@ UMyCharacterMovement::UMyCharacterMovement()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
 	// ...
 }
 
@@ -92,9 +91,13 @@ void UMyCharacterMovement::ComputeVelocity(float DeltaTime)
 		//Player Inputs
 		Velocity += Acceleration * DeltaTime;
 	}
+	else
+	{
+		Velocity *= .9f;
+	}
 
-	//Gravity
-	Velocity -= GetGravity() * DeltaTime;
+	if (GetGravity() != FVector::ZeroVector)
+		Velocity.Z -= 10000 * DeltaTime;
 
 	//will be replaced once mass and friction are added (likely)
 	Velocity.X = FMath::Clamp(Velocity.X, -MaxSpeed, MaxSpeed);
@@ -113,7 +116,11 @@ FVector UMyCharacterMovement::GetGravity()
 	{
 		AGravityBase* GravityActor = Cast<AGravityBase>(OverlappingGravities[0]);
 
-		return GravityActor->GetGravityDirection(OwningActor->GetActorLocation());
+		FVector GravityDirection = GravityActor->GetGravityDirection(OwningActor->GetActorLocation());
+		FRotator rotation = FRotationMatrix::MakeFromZX(GravityDirection * -1.0f, OwningActor->GetActorForwardVector()).Rotator();
+		OwningActor->SetActorRotation(rotation);
+
+		return GravityDirection;
 	}
 
 	return FVector::ZeroVector;
@@ -123,11 +130,15 @@ bool UMyCharacterMovement::IsOverlapping(AActor* Actor)
 {
 	TArray<AActor*> OverlappingActors;
 	Actor->GetOverlappingActors(OverlappingActors);
+	
 
 	for (AActor* OverlappingActor : OverlappingActors)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Collision: %s"), OverlappingActor);
-
+		if (!OverlappingActor->IsA(AGravityBase::StaticClass()))
+		{
+			return true;
+		}
+			
 	}
 
 	return false;

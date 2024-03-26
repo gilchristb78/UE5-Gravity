@@ -6,7 +6,7 @@
 #include "GameFramework/Pawn.h"
 #include "Components/CapsuleComponent.h"
 #include "Camera/CameraComponent.h"
-#include "MyCharacterMovement.h"
+#include "MyFloatingPawnMovement.h"
 #include "CharacterPawn.generated.h"
 
 
@@ -28,7 +28,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Robot")
 	float MaxSpeed;
 
-	UMyCharacterMovement* Movement;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Robot")
+	UMyFloatingPawnMovement* Movement;
 	
 	UCameraComponent* OurCamera;
 
