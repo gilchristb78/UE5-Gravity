@@ -32,21 +32,17 @@ void UGravityComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
-
 	AActor* OwningActor = GetOwner();
-
 
 	TArray<AActor*> OverlappingActors;
 	OwningActor->GetOverlappingActors(OverlappingActors, AGravityBase::StaticClass());
 
-	
 	if (OverlappingActors.Num() > 0)
 	{
 		AGravityBase* GravityZone = Cast<AGravityBase>(OverlappingActors[0]);
 
 		if (GravityZone->GetGravityDirection(OwningActor->GetActorLocation()) != GravityDirection)
 		{
-
 			GravityDirection = GravityZone->GetGravityDirection(OwningActor->GetActorLocation());
 
 			FRotator rotation = FRotationMatrix::MakeFromZX(GravityDirection * -1.0f, OwningActor->GetActorForwardVector()).Rotator();

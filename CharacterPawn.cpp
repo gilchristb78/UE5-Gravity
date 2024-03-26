@@ -11,22 +11,23 @@ ACharacterPawn::ACharacterPawn()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
+	//RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
 
+	
+
+	CollisionCapsule = CreateDefaultSubobject<UCapsuleComponent>("CollisionCapsule");
+	//CollisionCapsule->SetupAttachment(RootComponent);
+	RootComponent = CollisionCapsule;
 	Character = CreateDefaultSubobject<USkeletalMeshComponent>("Character");
 	Character->SetupAttachment(RootComponent);
 	Character->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
-
-	CollisionCapsule = CreateDefaultSubobject<UCapsuleComponent>("CollisionCapsule");
-	CollisionCapsule->SetupAttachment(RootComponent);
-
 	//Camera
 	OurCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("OurCamera"));
 	OurCamera->SetupAttachment(Character);
 	OurCamera->SetRelativeLocation(FVector(0.0f, -275.0f, 150.0f));
 	OurCamera->SetRelativeRotation(FRotator(-15.0f, 90.0f, 0.0f));
 
-	Movement = CreateDefaultSubobject<UMyCharacterMovement>(TEXT("MoveMentComponent"));
+	Movement = CreateDefaultSubobject<UMyFloatingPawnMovement>(TEXT("MoveMentComponent"));
 	
 
 }
@@ -43,6 +44,14 @@ void ACharacterPawn::BeginPlay()
 void ACharacterPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	//TArray<AActor*> OverlappingActors;
+	//CollisionCapsule->GetOverlappingActors(OverlappingActors);
+
+	//for (AActor* Overlap : OverlappingActors)
+	//{
+	//	UE_LOG(LogTemp, Warning, TEXT("Collision: %s"), Overlap->GetClass());
+	//}
 
 	//if (velocity != FVector::ZeroVector)
 	//{
@@ -68,7 +77,16 @@ void ACharacterPawn::Tick(float DeltaTime)
 	//	}
 	//	SetActorLocation(NewLocation);
 
-	//}
+	//}'
+
+	if (velocity != FVector::ZeroVector)
+	{
+		FVector WorldVector = FVector();
+		WorldVector += velocity.X * GetActorRightVector();
+		WorldVector += velocity.Y * GetActorForwardVector();
+		WorldVector += velocity.Z * GetActorUpVector();
+		Movement->AddInputVector(WorldVector);
+	}
 
 	if (rotVelocity != FVector::ZeroVector)
 	{
@@ -89,21 +107,21 @@ void ACharacterPawn::Tick(float DeltaTime)
 
 void ACharacterPawn::MoveXAxis(float val)
 {
-	Movement->AddRightMovement(val * 10);
-	//velocity.X = val * 100.0f;
+	//Movement->AddRightMovement(val * 10);
+	velocity.X = val * 100.0f;
 }
 
 void ACharacterPawn::MoveYAxis(float val)
 {
-	Movement->AddForwardMovement(val * 10);
-	//velocity.Y = val * 100.0f;
+	//Movement->AddForwardMovement(val * 10);
+	velocity.Y = val * 100.0f;
 }
 
 void ACharacterPawn::MoveZAxis(float val)
 {
-	Movement->AddUpMovement(val * 10);
-	/*if (val >= 0.0f)
-		velocity.Z = val * 100.0f;*/
+	//Movement->AddUpMovement(val * 10);
+	/*if (val >= 0.0f)*/
+	velocity.Z = val * 100.0f;
 }
 
 void ACharacterPawn::LookXAxis(float val)

@@ -31,7 +31,7 @@ public:
 	void AddRightMovement(float val);
 	void AddUpMovement(float val);
 
-	float MaxSpeed;
+	float MaxSpeed = 200;
 
 private:
 
