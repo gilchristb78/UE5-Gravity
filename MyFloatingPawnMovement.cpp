@@ -33,10 +33,10 @@ void UMyFloatingPawnMovement::AddGravity(float DeltaTime)
 	}
 	else
 	{
-		GravityDirection = FVector::DownVector;
+		GravityDirection = FVector::ZeroVector;
 	}
 
-	if (OwningActor)
+	if (OwningActor && GravityDirection != FVector::ZeroVector)
 	{
 		FHitResult OutHit;
 		FCollisionQueryParams Params;

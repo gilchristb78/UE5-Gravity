@@ -85,7 +85,8 @@ void ACharacterPawn::Tick(float DeltaTime)
 		WorldVector += velocity.X * GetActorRightVector();
 		WorldVector += velocity.Y * GetActorForwardVector();
 		WorldVector += velocity.Z * GetActorUpVector();
-		Movement->AddInputVector(WorldVector);
+		Movement->AddInputVector(WorldVector, true);
+		velocity *= 0.5;
 	}
 
 	if (rotVelocity != FVector::ZeroVector)
